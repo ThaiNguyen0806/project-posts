@@ -6,7 +6,7 @@ const router = Router();
 
 //GET ALL POSTS
 router.get('/', async (req: Request, res: Response) => {
-    const result = await pool.query(`Select posts.id, posts.title, posts.content, posts.created_at, users.email
+    const result = await pool.query(`Select posts.id, posts.user_id, posts.title, posts.content, posts.created_at, users.email
                                         FROM posts
                                         JOIN users ON posts.user_id = users.id
                                         ORDER BY posts.created_at DESC`);
@@ -15,7 +15,7 @@ router.get('/', async (req: Request, res: Response) => {
 
 //GET POST BY ID
 router.get('/:id', async (req: Request, res: Response) => {
-    const result = await pool.query(`Select posts.id, posts.title, posts.content, posts.created_at, users.email
+    const result = await pool.query(`Select posts.id, posts.user_id, posts.title, posts.content, posts.created_at, users.email
                                         FROM posts
                                         JOIN users ON posts.user_id = users.id
                                         WHERE posts.id = $1`, [req.params.id]);
