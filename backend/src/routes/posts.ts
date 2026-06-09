@@ -73,4 +73,17 @@ router.delete('/:id', authenticateToken, async (req: Request, res: Response) => 
     res.json({ message: 'Post deleted successfully' });
 });
 
+//GET ALL POSTS OF A USER
+router.get('/user/:userId', async (req: Request, res: Response) => {
+    const result = await pool.query(
+        `SELECT posts.id, posts.user_id, posts.title, posts.content, posts.created_at, users.email
+        FROM posts
+        JOIN users ON posts.user_id = users.id
+        WHERE posts.user_id = $1
+        ORDER BY posts.created_at DESC`,
+        [req.params.userId]
+    );
+    res.json({ posts: result.rows });
+});
+
 export default router;

@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+
+interface TokenPayload {
+  id: number;
+  role: string;
+}
 
 interface Post {
   id: number;
+  user_id: number;
   title: string;
   content: string;
   email: string;
@@ -11,13 +18,17 @@ interface Post {
 }
 
 function Posts() {
+  const token = localStorage.getItem('token');
+  const currentUser = token ? jwtDecode<TokenPayload>(token) : null;
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editContent, setEditContent] = useState('');
   const [posts, setPosts] = useState<Post[]>([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const token = localStorage.getItem('token');
 
   useEffect(() => {
     fetchPosts();
@@ -59,6 +70,22 @@ function Posts() {
     }
   };
 
+  const handleEdit = async (id: number) => {
+    try {
+      await axios.put(
+        `http://localhost:3000/posts/${id}`,
+        { title: editTitle, content: editContent },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setEditingId(null);
+      setEditTitle('');
+      setEditContent('');
+      fetchPosts();
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to update post');
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/login');
@@ -96,10 +123,42 @@ function Posts() {
       <h2>All Posts</h2>
       {posts.map((post) => (
         <div key={post.id} className="post-card">
-          <h3>{post.title}</h3>
-          <p>{post.content}</p>
-          <p>By: {post.email}</p>
-          <button onClick={() => handleDelete(post.id)}>Delete</button>
+          {editingId === post.id ? (
+            <div>
+              <input
+                type="text"
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+              />
+              <textarea
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+              />
+              <div className="post-actions">
+                <button onClick={() => handleEdit(post.id)}>Save</button>
+                <button onClick={() => setEditingId(null)}>Cancel</button>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <h3>{post.title}</h3>
+              <p>{post.content}</p>
+                <p>By: <span
+                  style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                  onClick={() => navigate(`/users/${post.user_id}`)}
+                >{post.email}</span></p>
+        {post.user_id === currentUser?.id && (
+          <>
+              <button style={{marginRight: '8px'}} onClick={() => {
+                setEditingId(post.id);
+                setEditTitle(post.title);
+                setEditContent(post.content);
+              }}>Edit</button>
+              <button onClick={() => handleDelete(post.id)}>Delete</button>
+          </>
+        )}
+            </div>
+          )}
         </div>
       ))}
     </div>

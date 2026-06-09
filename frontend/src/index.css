@@ -108,3 +108,9 @@ p a {
   margin-bottom: 12px;
   font-size: 14px;
 }
+
+.post-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
