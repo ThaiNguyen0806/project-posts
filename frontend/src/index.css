@@ -114,3 +114,7 @@ p a {
   gap: 8px;
   margin-top: 8px;
 }
+
+.search-input {
+  margin-bottom: 16px;
+}

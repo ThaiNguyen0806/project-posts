@@ -28,11 +28,21 @@ function Posts() {
   const [content, setContent] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [search, setSearch] = useState('');
 
 
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  useEffect(() => {
+    if (search.trim() === '') {
+      fetchPosts();
+    } else {
+      searchPosts();
+    }
+  }, [search]);
+
 
   const fetchPosts = async () => {
     try {
@@ -40,6 +50,16 @@ function Posts() {
       setPosts(res.data.posts);
     } catch (err) {
       setError('Failed to load posts');
+    }
+  };
+
+
+  const searchPosts = async () => {
+    try {
+      const res = await axios.get(`http://localhost:3000/posts/search?q=${search}`);
+      setPosts(res.data.posts);
+    } catch (err) {
+      setError('Search failed');
     }
   };
 
@@ -121,6 +141,13 @@ function Posts() {
       </form>
 
       <h2>All Posts</h2>
+      <input
+        className="search-input"
+        type="text"
+        placeholder="Search posts..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       {posts.map((post) => (
         <div key={post.id} className="post-card">
           {editingId === post.id ? (
@@ -141,7 +168,10 @@ function Posts() {
             </div>
           ) : (
             <div>
-              <h3>{post.title}</h3>
+                <h3
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => navigate(`/posts/${post.id}`)}
+                >{post.title}</h3>
               <p>{post.content}</p>
                 <p>By: <span
                   style={{ cursor: 'pointer', textDecoration: 'underline' }}

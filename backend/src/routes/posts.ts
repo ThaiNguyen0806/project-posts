@@ -13,6 +13,27 @@ router.get('/', async (req: Request, res: Response) => {
     res.json({ posts: result.rows });
 });
 
+//SEARCH POSTS BY TITLE
+router.get('/search', async (req: Request, res: Response) => {
+  const { q } = req.query;
+
+  if (!q) {
+    return res.status(400).json({ message: 'Search query is required' });
+  }
+
+  const result = await pool.query(
+    `SELECT posts.id, posts.user_id, posts.title, posts.content, posts.created_at, users.email
+     FROM posts
+     JOIN users ON posts.user_id = users.id
+     WHERE posts.title ILIKE $1
+     ORDER BY posts.created_at DESC`,
+    [`%${q}%`]
+  );
+
+  res.json({ posts: result.rows });
+});
+
+
 //GET POST BY ID
 router.get('/:id', async (req: Request, res: Response) => {
     const result = await pool.query(`Select posts.id, posts.user_id, posts.title, posts.content, posts.created_at, users.email
