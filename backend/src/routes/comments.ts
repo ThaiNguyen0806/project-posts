@@ -46,7 +46,7 @@ router.delete('/:id', authenticateToken, async (req: Request, res: Response) => 
   }
 
   await pool.query('DELETE FROM comments WHERE id = $1', [req.params.id]);
-  res.json({ message: 'Comment deleted' });
+  res.json({ message: 'Comment deleted ' });
 });
 
 export default router;

@@ -4,6 +4,7 @@ import authRoutes from './routes/auth';
 import 'dotenv/config';
 import postsRoutes from './routes/posts';
 import commentsRoutes from './routes/comments';
+import likesRoutes from './routes/likes';
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/posts', postsRoutes);
 app.use('/comments', commentsRoutes);
+app.use('/likes', likesRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

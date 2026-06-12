@@ -34,14 +34,15 @@ function PostDetail() {
   const [newComment, setNewComment] = useState('');
   const token = localStorage.getItem('token');
   const currentUser = token ? jwtDecode<TokenPayload>(token) : null;
-
-  useEffect(() => {
-    fetchPost();
-  }, [id]);
+  const [likeCount, setLikeCount] = useState(0);
+  const [liked, setLiked] = useState(false);
 
   useEffect(() => {
     fetchPost();
     fetchComments();
+    if (token) {
+      fetchLikes();
+    }
   }, [id]);
 
   const fetchPost = async () => {
@@ -88,6 +89,30 @@ function PostDetail() {
     }
   };
 
+  const fetchLikes = async () => {
+    try {
+      const res = await axios.get(`http://localhost:3000/likes/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setLikeCount(res.data.count);
+      setLiked(res.data.liked);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleToggleLike = async () => {
+    try {
+      const res = await axios.post(`http://localhost:3000/likes/${id}`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setLiked(res.data.liked);
+      setLikeCount(prev => res.data.liked ? prev + 1 : prev - 1);
+    } catch (err) {
+      setError('Failed to like post');
+    }
+  };
+
   if (!post) return <div className="container"><p>Loading...</p></div>;
 
   return (
@@ -100,44 +125,50 @@ function PostDetail() {
 
       <div className="post-card">
         <h1>{post.title}</h1>
-        <h2>Comments</h2>
-
-{token && (
-  <form onSubmit={handleAddComment}>
-    <div>
-      <label>Add a comment</label>
-      <textarea
-        value={newComment}
-        onChange={(e) => setNewComment(e.target.value)}
-      />
-    </div>
-    <button type="submit">Post Comment</button>
-  </form>
-)}
-
-{comments.length === 0 ? (
-  <p>No comments yet.</p>
-) : (
-          comments.map((comment) => (
-            <div key={comment.id} className="post-card">
-              <p>{comment.content}</p>
-              <p>By: <span
-                style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                onClick={() => navigate(`/users/${comment.user_id}`)}
-              >{comment.email}</span></p>
-              {currentUser?.id === comment.user_id && (
-                <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
-              )}
-            </div>
-          ))
-        )}
         <p>By: <span
           style={{ cursor: 'pointer', textDecoration: 'underline' }}
           onClick={() => navigate(`/users/${post.user_id}`)}
         >{post.email}</span></p>
         <p>{post.created_at}</p>
         <p>{post.content}</p>
+        {token && (
+          <button onClick={handleToggleLike}>
+            {liked ? '❤️ Liked' : '🤍 Like'} ({likeCount})
+          </button>
+        )}
       </div>
+
+      <h2>Comments</h2>
+
+      {token && (
+        <form onSubmit={handleAddComment}>
+          <div>
+            <label>Add a comment</label>
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+          </div>
+          <button type="submit">Post Comment</button>
+        </form>
+      )}
+
+      {comments.length === 0 ? (
+        <p>No comments yet.</p>
+      ) : (
+        comments.map((comment) => (
+          <div key={comment.id} className="post-card">
+            <p>{comment.content}</p>
+            <p>By: <span
+              style={{ cursor: 'pointer', textDecoration: 'underline' }}
+              onClick={() => navigate(`/users/${comment.user_id}`)}
+            >{comment.email}</span></p>
+            {currentUser?.id === comment.user_id && (
+              <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
+            )}
+          </div>
+        ))
+      )}
     </div>
   );
 }
