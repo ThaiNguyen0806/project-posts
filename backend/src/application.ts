@@ -60,7 +60,7 @@ export class Application extends BaseApplication {
   staticConfigure(): void {}
 
   preConfigure(): ValueOrPromise<void> {
-    // Swagger
+    //Swagger
     this.bind<ISwaggerOptions>({
       key: SwaggerBindingKeys.SWAGGER_OPTIONS,
     }).toValue({
@@ -78,7 +78,7 @@ export class Application extends BaseApplication {
     this.component(SwaggerComponent);
     this.component(HealthCheckComponent);
 
-    // Auth
+    //Auth
     this.bind<TJWTTokenServiceOptions>({
       key: AuthenticateBindingKeys.JWT_OPTIONS,
     }).toValue({
@@ -97,7 +97,7 @@ export class Application extends BaseApplication {
       ],
     });
 
-    // Datasource
+  
     this.dataSource(PostgresDataSource);
 
     this.repository(UserRepository);

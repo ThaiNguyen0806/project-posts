@@ -37,5 +37,5 @@ export class UserRepository extends DefaultCRUDRepository<typeof User.schema> {
         [id]
     );
     return result.rows[0];
-}
+  }
 }

@@ -4,8 +4,8 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 interface TokenPayload {
-  id: number;
-  role: string;
+  userId: string;
+  roles: { id: number; identifier: string; priority: number }[];
 }
 
 interface Post {
@@ -163,7 +163,7 @@ function PostDetail() {
               style={{ cursor: 'pointer', textDecoration: 'underline' }}
               onClick={() => navigate(`/users/${comment.user_id}`)}
             >{comment.email}</span></p>
-            {currentUser?.id === comment.user_id && (
+            {currentUser?.userId && Number(currentUser.userId) === comment.user_id && (
               <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
             )}
           </div>

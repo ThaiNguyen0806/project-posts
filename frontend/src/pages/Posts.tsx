@@ -4,8 +4,8 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 interface TokenPayload {
-  id: number;
-  role: string;
+  userId: string;
+  roles: { id: number; identifier: string; priority: number }[];
 }
 
 interface Post {
@@ -177,7 +177,7 @@ function Posts() {
                   style={{ cursor: 'pointer', textDecoration: 'underline' }}
                   onClick={() => navigate(`/users/${post.user_id}`)}
                 >{post.email}</span></p>
-        {post.user_id === currentUser?.id && (
+        {post.user_id === Number(currentUser?.userId) && (
           <>
               <button style={{marginRight: '8px'}} onClick={() => {
                 setEditingId(post.id);
