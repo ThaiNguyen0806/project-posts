@@ -1,39 +1,30 @@
-import { Request, Response, NextFunction } from 'express';
+import { createMiddleware } from 'hono/factory';
 import jwt from 'jsonwebtoken';
 
 interface TokenPayload {
-    id: number;
-    role: string;
+  id: number;
+  role: string;
 }
 
-declare global {
-    namespace Express {
-        interface Request {
-            user?: TokenPayload;
-        }
-    }
-}
+export const authenticateToken = createMiddleware(async (c, next) => {
+  const authHeader = c.req.header('authorization');
 
-export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ message: 'No token provided' });
-    }
+  if (!authHeader) {
+    return c.json({ message: 'No token provided' }, 401);
+  }
 
-    const token = authHeader.split(' ')[1];
-    if (!token) {
-        return res.status(401).json({ message: 'No token provided' });
-    }
-    
-    try {
-        const secret = process.env.JWT_SECRET;
-        if (!secret) {
-            throw new Error('JWT_SECRET is not defined');
-        }
-        const decoded = jwt.verify(token, secret) as TokenPayload;
-        req.user = decoded;
-        next();
-    } catch (err) {
-        return res.status(403).json({ message: 'Invalid or expired token' });
-    }
-};
+  const token = authHeader.startsWith('Bearer ') 
+    ? authHeader.split(' ')[1] 
+    : authHeader;
+
+  try {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) throw new Error('JWT_SECRET is not defined');
+
+    const decoded = jwt.verify(token, secret) as TokenPayload;
+    c.set('user', decoded);
+    await next();
+  } catch (err) {
+    return c.json({ message: 'Invalid or expired token' }, 403);
+  }
+});
