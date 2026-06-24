@@ -11,7 +11,14 @@ const dataProvider: DataProvider = {
   getList: async (resource, params: GetListParams) => {
     const page = params.pagination?.page ?? 1;
     const perPage = params.pagination?.perPage ?? 10;
-    const response = await fetch(`${API_URL}/${resource}`, {
+
+    let url = `${API_URL}/${resource}`;
+
+    if (resource === 'comments' && params.meta?.postId) {
+        url = `${API_URL}/comments/${params.meta.postId}`;
+  }
+
+    const response = await fetch(url, {
       headers: getHeaders(),
     });
     const json = await response.json();
@@ -55,7 +62,13 @@ const dataProvider: DataProvider = {
   },
 
   create: async (resource, params: CreateParams) => {
-    const response = await fetch(`${API_URL}/${resource}`, {
+    let url = `${API_URL}/${resource}`;
+
+     if (resource === 'comments' && params.meta?.postId) {
+        url = `${API_URL}/comments/${params.meta.postId}`;
+    }
+    
+    const response = await fetch(url, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify(params.data),

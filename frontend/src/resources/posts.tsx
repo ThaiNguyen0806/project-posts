@@ -15,6 +15,8 @@ import {
   useRecordContext,
   useRedirect,
 } from 'react-admin';
+import { PostComments } from './comments';
+import { PostLikes } from './likes';
 
 export const PostList = () => {
   const { identity, isLoading } = useGetIdentity();
@@ -73,6 +75,8 @@ const PostShowContent = ({ currentUserId }: { currentUserId: any }) => {
           <DeleteButton />
         </>
       )}
+      <PostLikes />
+      <PostComments />
     </SimpleShowLayout>
   );
 };
