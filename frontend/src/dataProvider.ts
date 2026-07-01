@@ -16,7 +16,11 @@ const dataProvider: DataProvider = {
 
     if (resource === 'comments' && params.meta?.postId) {
         url = `${API_URL}/comments/${params.meta.postId}`;
-  }
+    } else if (resource === 'posts' && params.filter?.q) {
+        url = `${API_URL}/posts/search?q=${params.filter.q}`;
+    } else if (resource === 'posts' && params.meta?.userId) {
+        url = `${API_URL}/posts/user/${params.meta.userId}`;
+    }
 
     const response = await fetch(url, {
       headers: getHeaders(),
