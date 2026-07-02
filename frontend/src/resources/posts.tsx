@@ -149,17 +149,6 @@ export const PostList = () => {
   );
 };
 
-const OwnerActions = ({ currentUserId }: { currentUserId: any }) => {
-  const record = useRecordContext();
-  if (!record || record.user_id !== Number(currentUserId)) return null;
-  return (
-    <>
-      <EditButton />
-      <DeleteButton />
-    </>
-  );
-};
-
 export const PostShow = () => {
   const { identity } = useGetIdentity();
   return (
