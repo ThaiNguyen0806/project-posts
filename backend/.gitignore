@@ -3,3 +3,4 @@ node_modules/
 dist/
 *audit.json
 *-audit.json
+.env.*
