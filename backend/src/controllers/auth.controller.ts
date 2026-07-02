@@ -10,7 +10,7 @@ const AuthRoutes = {
       body: jsonContent({
         description: 'Register a new user',
         schema: z.object({
-          email: z.string().email(),
+          email: z.email(),
           password: z.string().min(6),
         }),
       }),
@@ -26,7 +26,7 @@ const AuthRoutes = {
       body: jsonContent({
         description: 'Login with email and password',
         schema: z.object({
-          email: z.string().email(),
+          email: z.email(),
           password: z.string(),
         }),
       }),
