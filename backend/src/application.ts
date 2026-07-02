@@ -32,7 +32,7 @@ import { CommentController } from '@/controllers/comment.controller';
 import { LikeController } from '@/controllers/like.controller';
 
 export const appConfigs: IApplicationConfigs = {
-  host: process.env.APP_ENV_SERVER_HOST ?? 'localhost',
+  host: '0.0.0.0',
   port: +(process.env.APP_ENV_SERVER_PORT ?? process.env.PORT ?? 3000),
   path: {
     base: '',
