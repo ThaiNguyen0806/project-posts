@@ -1,6 +1,6 @@
 import { type DataProvider, type GetListParams, type GetOneParams, type CreateParams, type UpdateParams, type DeleteParams } from "react-admin";
 
-const API_URL = 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const getHeaders = () => ({
   'Content-Type': 'application/json',
