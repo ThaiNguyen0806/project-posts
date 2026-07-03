@@ -1,9 +1,6 @@
-FROM node:20-alpine
+FROM oven/bun:1-alpine
 
 WORKDIR /app
-
-#Install Bun
-RUN npm install -g bun
 
 #Copy package files
 COPY package.json bun.lock* ./
