@@ -2,11 +2,13 @@ FROM oven/bun:1-alpine
 
 WORKDIR /app
 
+RUN bun add -g typescript tsc-alias
+
 #Copy package files
 COPY package.json bun.lock* ./
 
 #Install dependencies
-RUN bun install --frozen-lockfile
+RUN bun install 
 
 #Copy source code
 COPY . .
