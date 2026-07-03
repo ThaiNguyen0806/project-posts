@@ -26,9 +26,12 @@ export class PostgresDataSource extends BaseDataSource<IDSConfigs> {
   }
 
   override configure(): ValueOrPromise<void> {
-    const schema = this.getSchema();
-    this.pool = new Pool(this.settings);
-    this.connector = drizzle({ client: this.pool, schema });
+  const schema = this.getSchema();
+  this.pool = new Pool({
+    ...this.settings,
+    ssl: { rejectUnauthorized: false },
+  });
+  this.connector = drizzle({ client: this.pool, schema });
   }
 
   override getConnectionString(): ValueOrPromise<string> {
