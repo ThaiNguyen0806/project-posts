@@ -1,6 +1,6 @@
 FROM oven/bun:1-slim
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package.json bun.lock* ./
 
