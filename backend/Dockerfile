@@ -2,8 +2,6 @@ FROM oven/bun:1-alpine
 
 WORKDIR /app
 
-RUN bun add -g typescript tsc-alias
-
 #Copy package files
 COPY package.json bun.lock* ./
 
@@ -12,9 +10,6 @@ RUN bun install
 
 #Copy source code
 COPY . .
-
-#Build typescript 
-RUN bun run build
 
 EXPOSE 3000
 
