@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "bun build src/index.ts --outdir dist --target bun",
+    "build": "bun build src/index.ts --outdir dist --target bun --external casbin --external socket.io --external socket.io-client --external @socket.io/bun-engine --external @socket.io/redis-adapter --external @socket.io/redis-emitter --external bullmq --external nodemailer --external mailgun.js --external @connectrpc/connect",
     "preserver:dev": "bun run build",
     "server:dev": "cross-env NODE_ENV=development bun .",
     "server:prod": "cross-env NODE_ENV=production bun dist/index.js",
