@@ -121,7 +121,7 @@ export class Application extends BaseApplication {
   setupMiddlewares(): ValueOrPromise<void> {
     const server = this.getServer();
     server.use('*', cors({
-      origin: ['http://localhost:5173', 'https://project-posts-xi.vercel.app'],
+      origin: ['http://localhost:5173', 'http://localhost', process.env.FRONTEND_URL as string],
       credentials: true,
     }));
   }
