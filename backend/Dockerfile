@@ -1,16 +1,15 @@
-FROM oven/bun:1-alpine
+FROM oven/bun:1-slim
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-#Copy package files
-COPY package.json bun.lock* ./
+COPY package.json bun.lockb* ./
 
-#Install dependencies
-RUN bun install 
+RUN bun install --production --frozen-lockfile
 
-#Copy source code
 COPY . .
+
+RUN bun run build
 
 EXPOSE 3000
 
-CMD ["bun", "src/index.ts"]
+CMD ["bun", "run", "server:prod"]
