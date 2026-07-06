@@ -4,8 +4,6 @@ services:
       context: ./backend
     env_file:
       - ./backend/.env
-    ports:
-      - "3000:3000"
     restart: always
 
   frontend:
