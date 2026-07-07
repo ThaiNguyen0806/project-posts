@@ -5,6 +5,8 @@ import { PostList, PostCreate, PostEdit, PostShow } from './resources/posts';
 import { UserProfile } from './resources/profiles'
 import { Route } from 'react-router-dom';
 import { defaultTheme } from 'react-admin';
+import { Register } from './register';
+import { Login } from './login';
 
 const theme = {
   ...defaultTheme,
@@ -81,6 +83,7 @@ function App() {
       authProvider={authProvider}
       dataProvider={dataProvider}
       theme={theme}
+      loginPage={Login}
     >
       <Resource
         name="posts"
@@ -89,6 +92,9 @@ function App() {
         edit={PostEdit}
         show = {PostShow}
       />
+      <CustomRoutes noLayout>
+        <Route path="/register" element={<Register />} />
+      </CustomRoutes>
       <CustomRoutes>
         <Route path="/users/:userId" element={<UserProfile />} />
       </CustomRoutes>
