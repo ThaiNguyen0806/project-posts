@@ -145,6 +145,7 @@ export class PostController extends BaseRestController {
       const { title, content } = c.req.valid<{ title: string; content: string }>('json');
       if (!title) return c.json({ message: 'Title is required' }, 400);
       const post = await this.postService.createPost(userId, title, content);
+      console.log("testing");
       return c.json({ post }, HTTP.ResultCodes.RS_2.Created);
     } catch (err: any) {
       return c.json({ message: err.message ?? 'Internal server error' }, err.statusCode ?? 500);
